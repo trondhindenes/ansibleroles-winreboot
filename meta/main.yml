@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Trond Hindenes
-  description: A role to manage reboots
+  description: A role to manage reboots on Windows nodes
   license: BSD
   min_ansible_version: 1.9
   platforms:
