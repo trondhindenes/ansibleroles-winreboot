@@ -9,24 +9,26 @@ Requirements
 
 N/A
 
-Role Variables
+Role Variables (with defaults indicated)
 --------------
+
+###simulate: no
 Setting simulate to yes will force the role to think the node has a pending reboot and act accordingly
-simulate: no
 
-#reboot_behavior controls when to reboot the node. valid options are: never, if_required, always
-reboot_behavior: if_required
+###reboot_behavior: if_required
+reboot_behavior controls when to reboot the node. valid options are: never, if_required, always
 
-#cooldown_period: amount of time (in seconds) after reboot is initiated before we start testing if the node is back up.
-#for systems which take time to shutdown this can be increased (although it slows down the overall execution)
-cooldown_period: 10
+###cooldown_period: 10
+cooldown_period: amount of time (in seconds) after reboot is initiated before we start testing if the node is back up.
+for systems which take time to shutdown this can be increased (although it slows down the overall execution)
 
-#Number of retries before giving up waiting for the node to come back online
-winrm_retries: 30
+###winrm_retries: 30
+Number of retries before giving up waiting for the node to come back online
 
-#delay is the interval between each test if the node is back online (in seconds).
-#This number is in addition to the 10-second timeout of the winrm command itself, so 10 here= 20
-winrm_delay: 3
+###winrm_delay: 3
+delay is the interval between each test if the node is back online (in seconds).
+This number is in addition to the 10-second timeout of the winrm command itself, so 10 here= 20
+
 
 Dependencies
 ------------
