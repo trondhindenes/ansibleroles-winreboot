@@ -5,9 +5,9 @@ galaxy_info:
   license: BSD
   min_ansible_version: 1.9
   platforms:
-  - name: Ubuntu
+  - name: Windows
     versions:
-    - all
+    - Windows Server 2012R2
   categories:
   - packaging
   - system
