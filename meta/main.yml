@@ -1,8 +1,7 @@
 ---
 galaxy_info:
-  author: your name
+  author: Trond Hindenes
   description: 
-  company: your company (optional)
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
   # issue_tracker_url: http://example.com/issue/tracker
@@ -14,7 +13,7 @@ galaxy_info:
   # - Apache
   # - CC-BY
   license: license (GPLv2, CC-BY, etc)
-  min_ansible_version: 1.2
+  min_ansible_version: 1.9
   #
   # Below are all platforms currently available. Just uncomment
   # the ones that apply to your role. If you don't see your 
@@ -74,9 +73,9 @@ galaxy_info:
   #  - 9.1
   #  - 9.1
   #  - 9.2
-  #- name: Ubuntu
+  - name: Ubuntu
   #  versions:
-  #  - all
+    - all
   #  - lucid
   #  - maverick
   #  - natty
@@ -113,7 +112,7 @@ galaxy_info:
   # Below are all categories currently available. Just as with
   # the platforms above, uncomment those that apply to your role.
   #
-  #categories:
+  categories:
   #- cloud
   #- cloud:ec2
   #- cloud:gce
@@ -125,8 +124,8 @@ galaxy_info:
   #- development
   #- monitoring
   #- networking
-  #- packaging
-  #- system
+  - packaging
+  - system
   #- web
 dependencies: []
   # List your role dependencies here, one per line.
