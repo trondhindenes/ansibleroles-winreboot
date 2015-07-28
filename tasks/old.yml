@@ -1,0 +1,53 @@
+---
+- name: Get windows nodes with a pending reboot
+  win_pendingreboot: reboot_behavior=if_required simulate=no
+  register: pending_reboot_output
+
+#- name: wait for Windows reboot (1)
+#  pause: seconds=15
+#  when: pending_reboot_output.pending_reboot == true
+
+- name: prompt for resume
+  pause: prompt="Turn off now"
+
+#- name: Wait for windows reboot
+#  when: pending_reboot_output.pending_reboot == true
+#  shell: 'curl -s -f -k --header "Content-Type: application/soap+xml;charset=UTF-8" --header "WSMANIDENTIFY: unauthenticated" https://thansiblewin01.ansib.le:5986/wsman --data "<s:Envelope xmlns:s=http://www.w3.org/2003/05/soap-envelope xmlns:wsmid=http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd><s:Header/><s:Body><wsmid:Identify/></s:Body></s:Envelope>"'
+#  register: result2
+  #until: result2.stdout.find("http://www.w3.org/2003/05/soap-envelope")
+  #retries: 10
+  #delay: 10
+#  delegate_to: 127.0.0.1
+#  ignore_errors: yes
+#  changed_when: false
+
+#- name: new test
+#  uri:
+#    url="https://thansiblewin01.ansib.le:5986/wsman"
+#   validate_certs="no"
+#    HEADER_Content-Type='application/soap+xml;charset=UTF-8'
+#    HEADER_WSMANIDENTIFY="unauthenticated"
+#    HEADER_Content-Length=0
+#    method=POST
+#    force_basic_auth=yes
+#    #return_content=yes
+#    #status_code= 200,401
+#    #body='<s:Envelope xmlns:s=http://www.w3.org/2003/05/soap-envelope xmlns:wsmid=http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd><s:Header/><s:Body><wsmid:Identify/></s:Body></s:Envelope>'
+#    #body_format="raw"
+#  delegate_to: 127.0.0.1
+#  ignore_errors: yes
+#  register: result2
+ 
+- name: debug it
+  debug: var=inventory_hostname
+  delegate_to: thansiblewindc.ansib.le
+ 
+- name: new test 2
+  win_testwsman:
+    host_name= "{{ inventory_hostname }}"
+  delegate_to: thansiblewindc.ansib.le
+  register: result2 
+ 
+  
+- name: debug it
+  debug: var=result2

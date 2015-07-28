@@ -1,0 +1,46 @@
+---
+- name: Get windows nodes with a pending reboot
+  win_pendingreboot: reboot_behavior="{{ reboot_behavior }}" simulate="{{ simulate }}"
+  register: pending_reboot_output
+
+- name: Cooldown (wait for reboot to initiate)
+  pause: seconds="{{ cooldown_period }}"
+  when: pending_reboot_output.pending_reboot == true
+
+- name: Check if winrm check script exists
+  stat:
+    path="/tmp/{{ inventory_hostname }}.sh"
+  register: winrmstat
+  ignore_errors: True
+  delegate_to: 127.0.0.1
+  changed_when: False
+  when: pending_reboot_output.pending_reboot == true
+  
+
+- name: Remove existing winrm check script
+  when: winrmstat.stat.exists is defined  and winrmstat.stat.exists
+  file:
+    name="/tmp/{{ inventory_hostname }}.sh"
+    state=absent
+  delegate_to: 127.0.0.1
+  changed_when: False
+  when: pending_reboot_output.pending_reboot == true
+
+- name: Template out winrm check script
+  template:
+    src="checkwinrm.sh.j2" 
+    dest="/tmp/{{ inventory_hostname }}.sh"
+    mode=a+x
+  delegate_to: 127.0.0.1
+  changed_when: False
+  when: pending_reboot_output.pending_reboot == true
+  
+- name: Looping while waiting for WinRM
+  command: /tmp/{{ inventory_hostname }}.sh
+  delegate_to: 127.0.0.1
+  changed_when: False
+  register: result2
+  retries: "{{ winrm_retries }}"
+  delay: "{{ winrm_delay }}"
+  until: result2.stdout.find("Online") != -1
+  when: pending_reboot_output.pending_reboot == true
