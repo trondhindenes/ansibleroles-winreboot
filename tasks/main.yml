@@ -44,3 +44,12 @@
   delay: "{{ winrm_delay }}"
   until: result2.stdout.find("Online") != -1
   when: pending_reboot_output.pending_reboot == true
+
+- name: Cleanup
+  when: winrmstat.stat.exists is defined  and winrmstat.stat.exists
+  file:
+    name="/tmp/{{ inventory_hostname }}.sh"
+    state=absent
+  delegate_to: 127.0.0.1
+  changed_when: False
+  when: pending_reboot_output.pending_reboot == true
