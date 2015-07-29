@@ -1,12 +1,41 @@
 ---
 - name: Get windows nodes with a pending reboot
-  win_pendingreboot: reboot_behavior="{{ reboot_behavior }}" simulate="{{ simulate }}"
+  win_pendingreboot: reboot_behavior="{{ winreboot_reboot_behavior }}" simulate="{{ winreboot_simulate }}"
   register: pending_reboot_output
 
-- name: Cooldown (wait for reboot to initiate)
-  pause: seconds="{{ cooldown_period }}"
+- name: Check if cooldown script exists
+  stat:
+    path="/tmp/{{ inventory_hostname }}_cooldown.sh"
+  register: cooldownstat
+  ignore_errors: True
+  delegate_to: 127.0.0.1
+  changed_when: False
   when: pending_reboot_output.pending_reboot == true
 
+- name: Remove existing cooldown script
+  when: cooldownstat.stat.exists is defined  and cooldownstat.stat.exists
+  file:
+    name="/tmp/{{ inventory_hostname }}_cooldown.sh"
+    state=absent
+  delegate_to: 127.0.0.1
+  changed_when: False
+  when: pending_reboot_output.pending_reboot == true
+
+- name: Template out cooldown script
+  template:
+    src="cooldown.sh.j2" 
+    dest="/tmp/{{ inventory_hostname }}_cooldown.sh"
+    mode=a+x
+  delegate_to: 127.0.0.1
+  changed_when: False
+  when: pending_reboot_output.pending_reboot == true
+
+- name: Run cooldown script
+  command: /tmp/{{ inventory_hostname }}_cooldown.sh
+  delegate_to: 127.0.0.1
+  changed_when: False
+  when: pending_reboot_output.pending_reboot == true
+ 
 - name: Check if winrm check script exists
   stat:
     path="/tmp/{{ inventory_hostname }}.sh"
@@ -16,7 +45,6 @@
   changed_when: False
   when: pending_reboot_output.pending_reboot == true
   
-
 - name: Remove existing winrm check script
   when: winrmstat.stat.exists is defined  and winrmstat.stat.exists
   file:
@@ -40,8 +68,8 @@
   delegate_to: 127.0.0.1
   changed_when: False
   register: result2
-  retries: "{{ winrm_retries }}"
-  delay: "{{ winrm_delay }}"
+  retries: "{{ winreboot_winrm_retries }}"
+  delay: "{{ winreboot_winrm_delay }}"
   until: result2.stdout.find("Online") != -1
   when: pending_reboot_output.pending_reboot == true
 
