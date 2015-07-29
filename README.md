@@ -1,4 +1,4 @@
-win_pendingreboot
+win_reboot
 =========
 [![Platforms](http://img.shields.io/badge/platforms-windows-lightgrey.svg?style=flat)](#)
 
