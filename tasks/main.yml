@@ -13,13 +13,12 @@
   when: pending_reboot_output.pending_reboot == true
 
 - name: Remove existing cooldown script
-  when: cooldownstat.stat.exists is defined  and cooldownstat.stat.exists
   file:
     name="/tmp/{{ inventory_hostname }}_cooldown.sh"
     state=absent
   delegate_to: 127.0.0.1
   changed_when: False
-  when: pending_reboot_output.pending_reboot == true
+  when: cooldownstat.stat.exists is defined  and cooldownstat.stat.exists and pending_reboot_output.pending_reboot == true
 
 - name: Template out cooldown script
   template:
@@ -46,13 +45,12 @@
   when: pending_reboot_output.pending_reboot == true
   
 - name: Remove existing winrm check script
-  when: winrmstat.stat.exists is defined  and winrmstat.stat.exists
   file:
     name="/tmp/{{ inventory_hostname }}.sh"
     state=absent
   delegate_to: 127.0.0.1
   changed_when: False
-  when: pending_reboot_output.pending_reboot == true
+  when: winrmstat.stat.exists is defined  and winrmstat.stat.exists and pending_reboot_output.pending_reboot == true 
 
 - name: Template out winrm check script
   template:
@@ -74,7 +72,6 @@
   when: pending_reboot_output.pending_reboot == true
 
 - name: Cleanup
-  when: winrmstat.stat.exists is defined  and winrmstat.stat.exists
   file:
     name="/tmp/{{ inventory_hostname }}.sh"
     state=absent
