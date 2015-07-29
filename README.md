@@ -1,5 +1,6 @@
 win_pendingreboot
 =========
+[![Platforms](http://img.shields.io/badge/platforms-windows-lightgrey.svg?style=flat)](#)
 
 This Ansible role lets you check for an optionally perform reboots on Windows nodes. During the reboot cycle it will use a local task on the control node to check when the node is back online.
 
