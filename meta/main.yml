@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Trond Hindenes
-  description: A role to manage reboots on Windows nodes
+  description: A role to manage reboots on Windows nodes. The role will first check for pending reboots, and the (optionally) perform a reboot on the nodes that need it. Playbook execution will halt until the node is back online (tested by accessing the winrm webservice).
   license: BSD
   min_ansible_version: 1.9
   platforms:
