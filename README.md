@@ -38,11 +38,11 @@ N/A
 Example Playbook
 ----------------
 
-    - hosts: windows01*
+    - hosts: windows-web
       roles:
         - role: winreboot
-          simulate: yes
-    - hosts: windows02*
+          winreboot_simulate: yes
+    - hosts: windows-db
       roles:
         - role: winreboot
 
