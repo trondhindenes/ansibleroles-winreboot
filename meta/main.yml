@@ -7,7 +7,7 @@ galaxy_info:
   platforms:
   - name: Windows
     versions:
-    - Windows Server 2012R2
+    - 2012R2
   categories:
   - packaging
   - system
