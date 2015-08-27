@@ -41,11 +41,11 @@ Example Playbook
 
     - hosts: windows-web
       roles:
-        - role: winreboot
+        - role: trondhindenes.win_reboot
           winreboot_simulate: yes
     - hosts: windows-db
       roles:
-        - role: winreboot
+        - role: trondhindenes.win_reboot
 
 License
 -------
