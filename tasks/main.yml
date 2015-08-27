@@ -7,7 +7,6 @@
   stat:
     path="/tmp/{{ inventory_hostname }}_cooldown.sh"
   register: cooldownstat
-  ignore_errors: True
   delegate_to: 127.0.0.1
   changed_when: False
 
@@ -17,7 +16,7 @@
     state=absent
   delegate_to: 127.0.0.1
   changed_when: False
-  when: cooldownstat.stat.exists is defined  and cooldownstat.stat.exists and pending_reboot_output.pending_reboot == true
+  when: cooldownstat.stat.exists is defined and cooldownstat.stat.exists and pending_reboot_output.pending_reboot == true
 
 - name: Template out cooldown script
   template:
@@ -38,7 +37,6 @@
   stat:
     path="/tmp/{{ inventory_hostname }}.sh"
   register: winrmstat
-  ignore_errors: True
   delegate_to: 127.0.0.1
   changed_when: False
 
@@ -48,7 +46,7 @@
     state=absent
   delegate_to: 127.0.0.1
   changed_when: False
-  when: winrmstat.stat.exists is defined  and winrmstat.stat.exists and pending_reboot_output.pending_reboot == true 
+  when: winrmstat.stat.exists is defined and winrmstat.stat.exists and pending_reboot_output.pending_reboot == true 
 
 - name: Template out winrm check script
   template:
