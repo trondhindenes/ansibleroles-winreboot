@@ -10,7 +10,6 @@
   ignore_errors: True
   delegate_to: 127.0.0.1
   changed_when: False
-  when: pending_reboot_output.pending_reboot == true
 
 - name: Remove existing cooldown script
   file:
@@ -42,8 +41,7 @@
   ignore_errors: True
   delegate_to: 127.0.0.1
   changed_when: False
-  when: pending_reboot_output.pending_reboot == true
-  
+
 - name: Remove existing winrm check script
   file:
     name="/tmp/{{ inventory_hostname }}.sh"
