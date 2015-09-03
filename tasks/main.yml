@@ -3,74 +3,85 @@
   win_pendingreboot: reboot_behavior="{{ winreboot_reboot_behavior }}" simulate="{{ winreboot_simulate }}"
   register: pending_reboot_output
 
+- name: set reboot flag initial value to false
+  set_fact: do_reboot=false
+  changed_when: False
+
+- name: set reboot flag based on pending reboot / simulate
+  set_fact: do_reboot=true
+  when: pending_reboot_output.pending_reboot == true
+  changed_when: False
+
 - name: Check if cooldown script exists
   stat:
     path="/tmp/{{ inventory_hostname }}_cooldown.sh"
   register: cooldownstat
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
+  when: do_reboot == true
 
 - name: Remove existing cooldown script
   file:
     name="/tmp/{{ inventory_hostname }}_cooldown.sh"
     state=absent
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
-  when: cooldownstat.stat.exists is defined and cooldownstat.stat.exists and pending_reboot_output.pending_reboot == true
+  when: cooldownstat.stat.exists is defined and cooldownstat.stat.exists and do_reboot == true
 
 - name: Template out cooldown script
   template:
     src="cooldown.sh.j2" 
     dest="/tmp/{{ inventory_hostname }}_cooldown.sh"
     mode=a+x
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
-  when: pending_reboot_output.pending_reboot == true
+  when: do_reboot == true
 
 - name: Run cooldown script
   command: /tmp/{{ inventory_hostname }}_cooldown.sh
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
-  when: pending_reboot_output.pending_reboot == true
+  when: do_reboot == true
  
 - name: Check if winrm check script exists
   stat:
     path="/tmp/{{ inventory_hostname }}.sh"
   register: winrmstat
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
+  when: do_reboot == true
 
 - name: Remove existing winrm check script
   file:
     name="/tmp/{{ inventory_hostname }}.sh"
     state=absent
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
-  when: winrmstat.stat.exists is defined and winrmstat.stat.exists and pending_reboot_output.pending_reboot == true 
+  when: winrmstat.stat.exists is defined and winrmstat.stat.exists and do_reboot == true 
 
 - name: Template out winrm check script
   template:
     src="checkwinrm.sh.j2" 
     dest="/tmp/{{ inventory_hostname }}.sh"
     mode=a+x
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
-  when: pending_reboot_output.pending_reboot == true
+  when: do_reboot == true
   
 - name: Looping while waiting for WinRM
   command: /tmp/{{ inventory_hostname }}.sh
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
   register: result2
   retries: "{{ winreboot_winrm_retries }}"
   delay: "{{ winreboot_winrm_delay }}"
   until: result2.stdout.find("Online") != -1
-  when: pending_reboot_output.pending_reboot == true
+  when: do_reboot == true
 
 - name: Cleanup
   file:
     name="/tmp/{{ inventory_hostname }}.sh"
     state=absent
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
   changed_when: False
-  when: pending_reboot_output.pending_reboot == true
+  when: do_reboot == true
