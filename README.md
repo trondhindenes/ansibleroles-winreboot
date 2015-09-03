@@ -42,7 +42,9 @@ Example Playbook
     - hosts: windows-web
       roles:
         - role: trondhindenes.win_reboot
-          winreboot_simulate: yes
+      vars:
+        winreboot_simulate: yes
+
     - hosts: windows-db
       roles:
         - role: trondhindenes.win_reboot
