@@ -9,7 +9,7 @@
 
 - name: set reboot flag based on pending reboot / simulate
   set_fact: do_reboot=true
-  when: pending_reboot_output.pending_reboot == true
+  when: pending_reboot_output.pending_reboot == true or winreboot_reboot_behavior == 'always'
   changed_when: False
 
 - name: Check if cooldown script exists
